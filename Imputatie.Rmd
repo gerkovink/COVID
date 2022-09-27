@@ -46,13 +46,14 @@ pre { /* Code block - determines code spacing between lines */
 # setup environment
 library(haven)      # For importing SPSS data
 library(readxl)     # For reading excel files
+library(plyr)       # Data wrangling - load before tideyverse/dplyr!
 library(tidyverse)  # All things useful
 library(mice)       # For incomplete data analysis
 library(miceadds)   # Additions to mice
 library(ggmice)     # Plotting device for mice
 library(lme4)       # Linear mixed-effect modeling
-library(plyr)       # Data wrangling
 library(magrittr)   # Pipes in R
+
 
 # Define function for `not in`
 `%nin%` <- Negate(`%in%`)
@@ -159,9 +160,15 @@ vars <- names(dat_clean)
 
 ## impute fixed variables
 ```{r}
+roundmean <- function(x){round(mean(x, na.rm=TRUE), 0)}
+
+# dat_clean %>%
+#   group_by(id) %>%
+#   summarise(across(edu, ~ roundmean(.x))) %>% select(edu) %>% unique()
+
 dat_clean %<>% 
   group_by(id) %>% 
-  mutate(across(all_of(vars_fixed), ~ modus(.x))) %>% 
+  mutate(across(all_of(vars_fixed), ~ roundmean(.x))) %>% 
   ungroup()
 ### CHECK IF INCONSISTENCIES ARE GONE and if missings are preserved?
 ```
