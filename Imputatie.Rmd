@@ -233,15 +233,17 @@ plot_pred(pred_imp)
 ---
 
 # impute the data
-```{r}
+```{r cache = TRUE}
 imp <- mice(dat_imp, m = 5, maxit = 2, 
             method = meth_imp, 
             predictorMatrix = pred_imp, 
             printFlag= FALSE, 
-            seed = 104, 
+            seed = 123, 
             visitSequence = "monotone")
 imp_it <- mice.mids(imp, maxit = 10)
-saveRDS(imp_ruw, "imps.RDS")
+```
+```{r}
+saveRDS(imp, "imps.RDS")
 saveRDS(imp_it, "imps_12it.RDS")
 imp_it20 <- mice.mids(imp_it, maxit = 8)
 saveRDS(imp_it20, "imps_20it.RDS")
